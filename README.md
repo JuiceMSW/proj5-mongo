@@ -1,39 +1,39 @@
-# Project 5: Brevet time calculator with Ajax and MongoDB
+## Author Information
 
-Simple list of controle times from project 4 stored in MongoDB database.
+Name: Michael Welch  
+Email: michael.welch.99@gmail.com
 
-## What is in this repository
+## About
 
-You have a minimal implementation of Docker compose in DockerMongo folder,
-using which you can connect the flask app to MongoDB (as demonstrated in 
-class). Refer to the lecture slide "05a-Mongo-Docker-Compose.pdf" (dated 
-02/15/2018). 
+The Brevet Control Time Calculator uses the specifications given by the ACP.
 
-## Functionality you'll add
+The Open and Close Times are calculated using the table specified by the ACP found here - https://rusa.org/octime_alg.html
 
-You will reuse *your* code from project
-4 (https://github.com/UOCIS322/proj4-brevets). Recall: you created a list
-of open and close controle times using AJAX. In this project, you will create the 
-following functionality. 1) Create two buttons ("Submit") and ("Display") in the page where have
-controle times. 2) On clicking the Submit button, the control times should be
-entered into the database. 3) On clicking the Display button, the entries from
-the database should be displayed in a new page. 
+The Official ACP Form Based Calculator is located here - https://rusa.org/octime_acp.html
 
-Handle error cases appropriately. For example, Submit should return an error if
-there are no controle times. One can imagine many such cases: you'll come up
-with as many cases as possible.
+### Specifics
 
-## Tasks
+Calculating the Open and Close Times is done by taking the Control Distance and dividing by the number specified by the table.  
+Ex: 150km
 
-You'll turn in your credentials.ini using which we will get the following:
+	Max Speed from 0 - 200km = 34: Open Time = 150/34 = 04H24M
+	Min Speed from 0 - 600km = 15: Close Time = 150/15 = 10H00M
 
-* The working application.
+If a Control Distance spans over multiple ranges in the table then the Open and Close Times are calculated as follows.  
+Ex: 650km
 
-* A README.md file that includes not only identifying information (your name) but but also a revised, clear specification 
-  of the brevet controle time calculation rules.
+	Max Speed from 0 - 200km = 34: 200/34 = 05H52M
+	Max Speed from 200 - 400km = 32: 200/32 = 06H15M
+	Max Speed from 400 - 600km = 30: 200/30 = 06H40M
+	Max Speed from 600 - 1000km = 28: 50/28 = 01H47M
+	Open Time = 05H52M + 06H15M + 06H40M + 01H47M = 20H34M
 
-* Dockerfile
+	Min Speed from 0 - 600km = 15: 600/15 = 40H00M
+	Min Speed from 600 - 1000km = 11.428: 50/11.428 = 04H22M
+	Close Time = 40H00M + 04H22M = 44H22M
 
-* Test cases for the two buttons. No need to run nose.
+The Maximum Control Distance is 20% Longer than the Brevet Distance (Ex: For a 200km Brevet, 240km is the Maximum Control Distance).  
+For any Control in this Range, the Open and Close times are equal to the Brevet Distance Open and Close Times.
 
-* docker-compose.yml
+For a Control at 0km, the Open Time is equal to the Brevet Start Time and the Close Time is equal to the Brevet Start Time plus 1 Hour.  
+This means that Controls at small distanes could have Closing Times earlier than the Closing Time at the Control at 0km.
